@@ -1,0 +1,2 @@
+rootProject.name='iiatimd_app_project'
+include ':app'
