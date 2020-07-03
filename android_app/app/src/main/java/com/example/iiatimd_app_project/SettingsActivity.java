@@ -1,31 +1,26 @@
 package com.example.iiatimd_app_project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageButton;
 
-public class MainActivity extends AppCompatActivity{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_settings);
 
         final ImageButton agendaButton = findViewById(R.id.agendaButton);
-        final ImageButton settingsButton = findViewById(R.id.settingsButton);
+        final ImageButton homeButton = findViewById(R.id.homeButton);
 
-        final View testView = findViewById(R.id.settingsButton);
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingsIntent = new Intent(v.getContext(), SettingsActivity.class);
-                startActivity(settingsIntent);
+                Intent homeIntent = new Intent(v.getContext(), MainActivity.class);
+                startActivity(homeIntent);
             }
         });
 
@@ -36,6 +31,5 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(agendaIntent);
             }
         });
-
     }
 }

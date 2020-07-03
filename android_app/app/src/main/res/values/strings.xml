@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">iiatimd_app_project</string>
+    <string name="app_name">Dey</string>
+    <string name="background_image_alt">Background image</string>
+    <string name="footer_home">Home</string>
+    <string name="footer_agenda">Agenda</string>
+    <string name="footer_settings">Settings</string>
 </resources>

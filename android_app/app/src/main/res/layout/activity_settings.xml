@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    tools:context=".SettingsActivity">
 
     <ImageView
         android:id="@+id/background_image"
@@ -18,7 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/background" />
+        app:srcCompat="@drawable/background"
+        />
 
     <ImageButton
         android:id="@+id/homeButton"
@@ -28,7 +28,7 @@
         android:background="#00000000"
         android:contentDescription="@string/footer_home"
         android:transitionName="NavHomeButton"
-        android:tint="#F86D70"
+        android:tint="#A9A9A9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,12 +57,11 @@
         android:background="#00000000"
         android:contentDescription="@string/footer_settings"
         android:transitionName="NavSettingsButton"
-        android:tint="#A9A9A9"
+        android:tint="#F86D70"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.87"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_settings" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
