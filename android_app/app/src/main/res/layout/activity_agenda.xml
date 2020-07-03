@@ -64,4 +64,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_settings" />
 
+    <TextView
+        android:id="@+id/textView__greeting"
+        android:layout_width="232dp"
+        android:layout_height="69dp"
+        android:fontFamily="@font/tenali_ramakrishna"
+        android:text="@string/planning"
+        android:textColor="#000000"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/homeButton"
+        app:layout_constraintEnd_toEndOf="@+id/background_image"
+        app:layout_constraintHorizontal_bias="0.136"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.036" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
