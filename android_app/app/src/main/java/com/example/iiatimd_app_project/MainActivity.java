@@ -95,5 +95,12 @@ public class MainActivity extends AppCompatActivity{
                 today.setText("zondag");
                 break;
         }
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle != null){
+            TextView tv = findViewById(R.id.textview__test);
+            tv.setText(bundle.get("leerdoel").toString());
+        }
     }
 }
