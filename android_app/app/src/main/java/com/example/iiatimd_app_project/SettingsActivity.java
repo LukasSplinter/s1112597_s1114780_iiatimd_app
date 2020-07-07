@@ -57,9 +57,9 @@ public class SettingsActivity extends AppCompatActivity {
         recyclerViewAdapter = new SettingRowAdapter(settingRowEntries);
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "ActivityDB").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-        db.settingRowEntryDAO().insertEntry(settingRowEntries[3]);
-        String boi = db.settingRowEntryDAO().getAll().get(0).getActivity();
-        Log.d("test", boi);
+        AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+
+        new Thread(new InsertActivityTask(db, settingRowEntries[4])).start();
+        //new Thread(new getActivitiesTask(db)).start();
     }
 }
