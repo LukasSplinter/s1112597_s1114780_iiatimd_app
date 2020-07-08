@@ -20,6 +20,84 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/background" />
 
+    <TextView
+        android:id="@+id/textview__planning"
+        android:layout_width="250dp"
+        android:layout_height="75dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="10dp"
+        android:enabled="true"
+        android:fontFamily="@font/open_sans"
+        android:gravity="center"
+        android:text="@string/vandaag"
+        android:textColor="@color/colorPrimary"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.77" />
+
+    <TextView
+        android:id="@+id/textview__agendaTekst"
+        android:layout_width="73dp"
+        android:layout_height="32dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="15dp"
+        android:enabled="true"
+        android:fontFamily="@font/open_sans"
+        android:gravity="center"
+        android:text="@string/planning"
+        android:textColor="@color/textPurple"
+        app:layout_constraintBottom_toTopOf="@+id/textview__planning"
+        app:layout_constraintStart_toStartOf="@+id/textview__planning" />
+
+    <TextView
+        android:id="@+id/textview__naarAgendaTekst"
+        android:layout_width="150dp"
+        android:layout_height="32dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="15dp"
+        android:enabled="true"
+        android:fontFamily="@font/open_sans"
+        android:gravity="center"
+        android:text="@string/naarAgendaTekst"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="@+id/textview__planning"
+        app:layout_constraintTop_toBottomOf="@+id/textview__planning" />
+
+    <TextView
+        android:id="@+id/textview__activiteit"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="10dp"
+        android:enabled="true"
+        android:fontFamily="@font/open_sans"
+        android:gravity="center"
+        android:text="@string/vandaag"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview__activiteitTekst"
+        android:layout_width="73dp"
+        android:layout_height="32dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="15dp"
+        android:enabled="true"
+        android:fontFamily="@font/open_sans"
+        android:gravity="center"
+        android:text="@string/activiteit"
+        android:textColor="@color/textPurple"
+        app:layout_constraintBottom_toTopOf="@+id/textview__activiteit"
+        app:layout_constraintStart_toStartOf="@+id/textview__activiteit" />
+
     <ImageButton
         android:id="@+id/homeButton"
         android:layout_width="60dp"
@@ -80,7 +158,7 @@
         app:layout_constraintVertical_bias="0.036" />
 
     <TextView
-        android:id="@+id/textview__vandaagtekst2"
+        android:id="@+id/textview__vandaagtekst"
         android:layout_width="73dp"
         android:layout_height="32dp"
         android:background="@drawable/rounded_corner"
@@ -89,13 +167,14 @@
         android:fontFamily="@font/open_sans"
         android:gravity="center"
         android:text="@string/vandaag"
+        android:textColor="@color/textPurple"
         app:layout_constraintBottom_toTopOf="@+id/textview__vandaag"
         app:layout_constraintStart_toStartOf="@+id/textview__vandaag" />
 
     <TextView
         android:id="@+id/textview__vandaag"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
+        android:layout_width="250dp"
+        android:layout_height="75dp"
         android:background="@drawable/rounded_corner"
         android:elevation="10dp"
         android:enabled="true"
@@ -108,7 +187,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.286" />
+        app:layout_constraintVertical_bias="0.25" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

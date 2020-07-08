@@ -2,6 +2,7 @@ package com.example.iiatimd_app_project;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -17,16 +18,22 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity{
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -40,6 +47,11 @@ public class MainActivity extends AppCompatActivity{
 
         final TextView greeting = findViewById(R.id.textView__greeting);
         final TextView today = findViewById(R.id.textview__vandaag);
+
+        final TextView activiteit = findViewById(R.id.textview__activiteit);
+        final TextView planning = findViewById(R.id.textview__planning);
+
+        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "iiatimd").build();
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,21 +115,76 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://127.0.0.1:8000/api";
+        //get day/year/month for api call
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
+        cal.setTime(d);
+        int currentDay = cal.get(Calendar.DAY_OF_MONTH);
+        int currentMonth = cal.get(Calendar.MONTH);
+        int currentYear = cal.get(Calendar.YEAR);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, (url + "/activiteiten/random"),
-                new Response.Listener<String>(){
+        RequestQueue queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        /*
+        * SWITCH URL LATER, DIT IS PUUR VOOR TIJDENS DEVELOPMENT WANT IK KAN NIET STUDIO EN MN API SAMEN RUNNEN :)))
+        * */
+//        final String url = "http://127.0.0.1:8000/api + "/activiteiten/random"";
+        final String url = "https://pokeapi.co/api/v2/pokemon/";
+
+        JsonObjectRequest activiteitRequest = new JsonObjectRequest
+                (Request.Method.GET, (url + "ditto"), null, new Response.Listener<JSONObject>() {
+
                     @Override
-                    public void onResponse(String response){
-                        Log.d("api",response.substring(0, 50));
+                    public void onResponse(JSONObject response) {
+                        try {
+                            activiteit.setText(response.getString("name"));
+                            //todo: zet planning in room db - DONE
+                            db.activiteitDAO().deleteFirst();
+                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("omschrijving"), 1));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error){
-                Log.d("api", error.toString());
-            }
-        });
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("api", error.toString());
+                        //todo: als api call foutgaat, haal laatste planning uit room db - DONE
+                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
+                    }
+                });
+        //request voor planning/agendapunten
+        //url + dag/maand/jaar
+        //todo: als ik api kan aanspreken: verander api naar onderstaand
+        //(url + /agenda/ + currentDay + "/" + currentMonth + "/" + currentYear)
+        JsonObjectRequest planningRequest = new JsonObjectRequest
+                (Request.Method.GET, (url + "pikachu"), null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            planning.setText(response.getString("name"));
+
+                            //todo: zet planning in room db - KAN PAS VERDER ALS API AANSPREEKBAAR IS
+//                            db.agendaDAO().deleteFirst();
+//                            db.agendaDAO().insertAgendaPunt(new AgendaPunt([[agenda-omschrijving]], [[agenda-datum]], 1));
+                        } catch (JSONException e) {
+                            //if no json gets returned, there are no pointers for that day, so we can replace the string with "niks vandaag"
+                            planning.setText("Niks vandaag");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("api", error.toString());
+                        //todo: als api call foutgaat, haal laatste planning uit room db - DONE (DENKIK, TESTEN!)
+                        planning.setText(db.agendaDAO().getFirst().getOmschrijving());
+                    }
+                });
+
+        VolleySingleton.getInstance(this).addToRequestQueue(activiteitRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(planningRequest);
+
 
 
     }

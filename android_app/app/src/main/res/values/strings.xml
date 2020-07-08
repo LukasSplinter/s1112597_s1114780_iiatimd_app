@@ -21,4 +21,8 @@
     <string name="friday">vrijdag</string>
     <string name="saturday">zaterdag</string>
     <string name="sunday">zondag</string>
+
+    <string name="activiteit">Activiteit</string>
+    <string name="naarAgendaTekst">Meer in planning</string>
+
 </resources>
