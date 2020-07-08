@@ -13,6 +13,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -95,5 +102,23 @@ public class MainActivity extends AppCompatActivity{
                 today.setText("zondag");
                 break;
         }
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        final String url = "http://127.0.0.1:8000/api";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, (url + "/activiteiten/random"),
+                new Response.Listener<String>(){
+                    @Override
+                    public void onResponse(String response){
+                        Log.d("api",response.substring(0, 50));
+                    }
+                }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error){
+                Log.d("api", error.toString());
+            }
+        });
+
+
     }
 }
