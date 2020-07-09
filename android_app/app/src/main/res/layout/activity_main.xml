@@ -63,6 +63,7 @@
         android:gravity="center"
         android:text="@string/naarAgendaTekst"
         android:textColor="@color/colorAccent"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/textview__planning"
         app:layout_constraintTop_toBottomOf="@+id/textview__planning" />
 

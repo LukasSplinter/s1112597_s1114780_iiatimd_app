@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity{
         final TextView meerInPlanning = findViewById(R.id.textview__meerInPlanning);
 
         //create db
+        //todo: find fix for mem. leak so i dont have to use .allowmainthreadqueries() because i dont wanna get killed by jeroen ;p
         final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "iiatimd").allowMainThreadQueries().build();
 
         //navigation buttons
@@ -86,33 +87,11 @@ public class MainActivity extends AppCompatActivity{
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
         Date d = new Date();
             //get day of the week
-        String dayOfTheWeek = sdf.format(d);
+        String dayOfTheWeek = sdf.format(d).toLowerCase();
             //set textview to said date of the week
-            //dutch days because java simpledateformat doesnt have dutch yet because idfk :(((
-            //this is horrible but bite me im tired
-        switch(dayOfTheWeek.toLowerCase()){
-            case "monday":
-                today.setText("maandag");
-                break;
-            case "tuesday":
-                today.setText("dinsdag");
-                break;
-            case "wednesday":
-                today.setText("woensdag");
-                break;
-            case "thursday":
-                today.setText("donderdag");
-                break;
-            case "friday":
-                today.setText("vrijdag");
-                break;
-            case "saturday":
-                today.setText("zaterdag");
-                break;
-            case "sunday":
-                today.setText("zondag");
-                break;
-        }
+            //dutch days because java simpledateformat doesnt have dutch
+        //done by getting the string resource name with varuable dayOfTheWeek
+        today.setText(getString(getResources().getIdentifier(dayOfTheWeek, "string", getPackageName())));
 
         //get day/year/month for api call
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
@@ -162,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
                         try {
                             //if size of reponse array == 0 > no activities for today
                             if (response.length() == 0){
-                                planning.setText("Niks vandaag");
+                                planning.setText(getString(R.string.niksVandaag));
                             }else{
                                 //if there are more than 1 items for the day, set a banner which signals to user that there are more items in "planning" page
                                 if (response.length() > 1){
@@ -190,19 +169,19 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //in case of an exception, check if item saved in database is of the same date as today
-                        if ((db.agendaDAO().getFirst().getDatum().split("-")[2] == String.valueOf(currentDay)) &&
-                                (db.agendaDAO().getFirst().getDatum().split("-")[1] == String.valueOf(currentMonth)) &&
-                                (db.agendaDAO().getFirst().getDatum().split("-")[0] == String.valueOf(currentYear))){
+                        if ((db.agendaDAO().getFirst().getDatum().split("-")[2].equals(String.valueOf(currentDay))) &&
+                                (db.agendaDAO().getFirst().getDatum().split("-")[1].equals(String.valueOf(currentMonth))) &&
+                                (db.agendaDAO().getFirst().getDatum().split("-")[0].equals(String.valueOf(currentYear)))){
                             //if yes: load into textview
                             planning.setText(db.agendaDAO().getFirst().getOmschrijving());
                         }else{
                             //else: if we dont have any agenda items for this date, just show user that there are no known items for today:
-                            planning.setText("Niks vandaag");
+                            planning.setText(getString(R.string.niksVandaag));
                         }
                     }
                 });
 
-        //retrypolicies increased because the api is quite slow, to prevent early timeout.
+        //retrypolicies increased because the api is quite ((really damn)) slow, to prevent early timeout.
         activiteitRequest.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
@@ -215,9 +194,7 @@ public class MainActivity extends AppCompatActivity{
             }
 
             @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
+            public void retry(VolleyError error) throws VolleyError {}
         });
         planningRequest.setRetryPolicy(new RetryPolicy() {
             @Override
@@ -231,9 +208,7 @@ public class MainActivity extends AppCompatActivity{
             }
 
             @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
+            public void retry(VolleyError error) throws VolleyError {}
         });
 
         VolleySingleton.getInstance(this).addToRequestQueue(activiteitRequest);
