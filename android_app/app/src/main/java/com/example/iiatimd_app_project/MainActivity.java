@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity{
         final TextView meerInPlanning = findViewById(R.id.textview__meerInPlanning);
 
         //create db
-        //todo: find fix for mem. leak so i dont have to use .allowmainthreadqueries() because i dont wanna get killed by jeroen ;p
-        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "iiatimd").allowMainThreadQueries().build();
+        final AppDatabase db = AppDatabase.getInstance(getApplicationContext());
 
         //navigation buttons
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -132,8 +131,8 @@ public class MainActivity extends AppCompatActivity{
                         activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
                     }
                 });
-        //request voor planning/agendapunten
-        //url + dag/maand/jaar
+        //request for agenda items
+        //url + day/month/year
         JsonArrayRequest planningRequest = new JsonArrayRequest
                 (Request.Method.GET, (url + "agenda/" + currentDay + "/" + (currentMonth + 1) + "/" + currentYear), null, new Response.Listener<JSONArray>() {
                     @Override
