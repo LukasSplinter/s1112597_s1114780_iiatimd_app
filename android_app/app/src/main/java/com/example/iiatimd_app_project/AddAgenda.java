@@ -48,28 +48,32 @@ public class AddAgenda extends AppCompatActivity {
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
+                //pull and parse data from input forms
                 final String itemDescription = inputText.getText().toString();
                 final String itemDate = inputDate.getYear() + "-" + (inputDate.getMonth() + 1) + "-" + inputDate.getDayOfMonth();
 
                 StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>()
                         {
+                            //runs on response from api for succesful post
                             @Override
                             public void onResponse(String response) {
-                                // response
-                                Log.d("Response", response);
+                                //redirect user back to agenda page
+                                Intent agendaIntent = new Intent(v.getContext(), AgendaActivity.class);
+                                startActivity(agendaIntent);
                             }
                         },
                         new Response.ErrorListener()
                         {
                             @Override
+                            //exception
                             public void onErrorResponse(VolleyError error) {
-                                // error
-                                Log.d("Error.Response", error.toString());
+                                Log.d("api", error.toString());
                             }
                         }
                 ) {
+                    //send data to api
                     @Override
                     protected Map<String, String> getParams()
                     {
@@ -84,8 +88,7 @@ public class AddAgenda extends AppCompatActivity {
 
 
 
-                Intent agendaIntent = new Intent(v.getContext(), AgendaActivity.class);
-                startActivity(agendaIntent);
+
             }
         });
     }
