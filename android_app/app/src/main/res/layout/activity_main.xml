@@ -53,7 +53,7 @@
         app:layout_constraintStart_toStartOf="@+id/textview__planning" />
 
     <TextView
-        android:id="@+id/textview__naarAgendaTekst"
+        android:id="@+id/textview__meerInPlanning"
         android:layout_width="150dp"
         android:layout_height="32dp"
         android:background="@drawable/rounded_corner"

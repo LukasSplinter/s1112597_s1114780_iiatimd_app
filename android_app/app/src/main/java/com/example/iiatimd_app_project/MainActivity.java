@@ -4,12 +4,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,21 +19,15 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity{
@@ -54,8 +46,12 @@ public class MainActivity extends AppCompatActivity{
         final TextView activiteit = findViewById(R.id.textview__activiteit);
         final TextView planning = findViewById(R.id.textview__planning);
 
-        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "iiatimd").build();
+        final TextView meerInPlanning = findViewById(R.id.textview__meerInPlanning);
 
+        //create db
+        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "iiatimd").allowMainThreadQueries().build();
+
+        //navigation buttons
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,56 +117,68 @@ public class MainActivity extends AppCompatActivity{
         //get day/year/month for api call
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
         cal.setTime(d);
-        int currentDay = cal.get(Calendar.DAY_OF_MONTH);
-        int currentMonth = cal.get(Calendar.MONTH);
+        final int currentDay = cal.get(Calendar.DAY_OF_MONTH);
+        final int currentMonth = cal.get(Calendar.MONTH);
         final int currentYear = cal.get(Calendar.YEAR);
 
+        //define and assign requestqueue from VolleySingleton
         RequestQueue queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
         final String url = "https://dey-iiatimd.herokuapp.com/api/";
 
-        Log.d("api", (url + "activiteiten/random"));
         JsonObjectRequest activiteitRequest = new JsonObjectRequest
                 (Request.Method.GET, (url + "activiteiten/random"), null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.d("api-act", response.toString());
+                            Log.d("api", "got response");
+                            //set activity text to "activiteit" textview
                             activiteit.setText(response.getString("activiteit_omschrijving"));
-                            //todo: zet planning in room db - DONE
-//                            db.activiteitDAO().deleteFirst();
-//                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("activiteit_omschrijving"), 1));
+
+                            //push activity to room db
+                            db.activiteitDAO().deleteFirst();
+                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("activiteit_omschrijving"), 1));
+
+                            //exception
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        //exception
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("api-act-error", error.toString());
-                        //todo: als api call foutgaat, haal laatste planning uit room db - DONE
-//                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
+                        //in case of timeout or other exceptions, load activity saved in room db
+                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
                     }
                 });
         //request voor planning/agendapunten
         //url + dag/maand/jaar
         JsonArrayRequest planningRequest = new JsonArrayRequest
                 (Request.Method.GET, (url + "agenda/" + currentDay + "/" + (currentMonth + 1) + "/" + currentYear), null, new Response.Listener<JSONArray>() {
-
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            Log.d("api-agenda", response.toString());
                             //if size of reponse array == 0 > no activities for today
                             if (response.length() == 0){
                                 planning.setText("Niks vandaag");
                             }else{
+                                //if there are more than 1 items for the day, set a banner which signals to user that there are more items in "planning" page
+                                if (response.length() > 1){
+                                    meerInPlanning.setVisibility(View.VISIBLE);
+                                }
+                                //set item text to planning textview
                                 planning.setText(response.getJSONObject(0).getString("agenda_item"));
+
+                                //push agenda item to room db
+                                db.agendaDAO().deleteFirst();
+                                db.agendaDAO().insertAgendaPunt(
+                                        new AgendaPunt(response.getJSONObject(0).getString("agenda_item"),
+                                                response.getJSONObject(0).getString("datum"),
+                                                1));
                             }
-                            //todo: zet planning in room db - KAN PAS VERDER ALS API AANSPREEKBAAR IS
-//                            db.agendaDAO().deleteFirst();
-//                            db.agendaDAO().insertAgendaPunt(new AgendaPunt([[agenda-omschrijving]], [[agenda-datum]], 1));
+                            //exception
                         } catch (Exception e) {
                             Log.e("api-agenda-error", e.toString());
                         }
@@ -181,20 +189,29 @@ public class MainActivity extends AppCompatActivity{
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("api-agenda-error", error.toString());
-                        //todo: als api call foutgaat, haal laatste planning uit room db - DONE (DENKIK, TESTEN!)
-//                        planning.setText(db.agendaDAO().getFirst().getOmschrijving());
+                        //in case of an exception, check if item saved in database is of the same date as today
+                        if ((db.agendaDAO().getFirst().getDatum().split("-")[2] == String.valueOf(currentDay)) &&
+                                (db.agendaDAO().getFirst().getDatum().split("-")[1] == String.valueOf(currentMonth)) &&
+                                (db.agendaDAO().getFirst().getDatum().split("-")[0] == String.valueOf(currentYear))){
+                            //if yes: load into textview
+                            planning.setText(db.agendaDAO().getFirst().getOmschrijving());
+                        }else{
+                            //else: if we dont have any agenda items for this date, just show user that there are no known items for today:
+                            planning.setText("Niks vandaag");
+                        }
                     }
                 });
+
+        //retrypolicies increased because the api is quite slow, to prevent early timeout.
         activiteitRequest.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
-                return 50000;
+                return 20000;
             }
 
             @Override
             public int getCurrentRetryCount() {
-                return 50000;
+                return 20000;
             }
 
             @Override
@@ -202,16 +219,15 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-
         planningRequest.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
-                return 50000;
+                return 20000;
             }
 
             @Override
             public int getCurrentRetryCount() {
-                return 50000;
+                return 20000;
             }
 
             @Override
