@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity{
                             activiteit.setText(response.getString("activiteit_omschrijving"));
 
                             //push activity to room db
-                            db.activiteitDAO().deleteFirst();
-                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("activiteit_omschrijving"), 1));
+                            Activiteit act = new Activiteit(response.getString("activiteit_omschrijving"), 1);
+                            new Thread(new insertActiviteitTask(db, act, true)).start();
 
                             //exception
                         } catch (JSONException e) {
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //in case of timeout or other exceptions, load activity saved in room db
-                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
+                        new Thread(new setActiviteitTask(db, activiteit)).start();
                     }
                 });
         //request for agenda items
@@ -149,13 +149,14 @@ public class MainActivity extends AppCompatActivity{
                                 //set item text to planning textview
                                 planning.setText(response.getJSONObject(0).getString("agenda_item"));
 
-                                //push agenda item to room db
-                                db.agendaDAO().deleteFirst();
-                                db.agendaDAO().insertAgendaPunt(
-                                        new AgendaPunt(response.getJSONObject(0).getString("agenda_item"),
-                                                response.getJSONObject(0).getString("datum"),
-                                                1));
+                                //push activity to room db
+                                AgendaPunt ap = new AgendaPunt(response.getJSONObject(0).getString("agenda_item"),
+                                        response.getJSONObject(0).getString("datum"),
+                                        1);
+                                new Thread(new InsertAgendaPuntTask(db, ap, true)).start();
                             }
+
+
                             //exception
                         } catch (Exception e) {
                             Log.e("api-agenda-error", e.toString());
@@ -167,16 +168,8 @@ public class MainActivity extends AppCompatActivity{
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //in case of an exception, check if item saved in database is of the same date as today
-                        if ((db.agendaDAO().getFirst().getDatum().split("-")[2].equals(String.valueOf(currentDay))) &&
-                                (db.agendaDAO().getFirst().getDatum().split("-")[1].equals(String.valueOf(currentMonth))) &&
-                                (db.agendaDAO().getFirst().getDatum().split("-")[0].equals(String.valueOf(currentYear)))){
-                            //if yes: load into textview
-                            planning.setText(db.agendaDAO().getFirst().getOmschrijving());
-                        }else{
-                            //else: if we dont have any agenda items for this date, just show user that there are no known items for today:
-                            planning.setText(getString(R.string.niksVandaag));
-                        }
+                        //in case of an exception, load last saved item into "planning" textview
+                        new Thread(new setAgendaPuntTask(db, planning)).start();
                     }
                 });
 
