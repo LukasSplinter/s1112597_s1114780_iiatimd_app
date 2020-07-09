@@ -12,6 +12,7 @@
 
     <string name="planning">Planning</string>
     <string name="instellingen">Instellingen</string>
+    <string name="addAgenda">Voeg toe</string>
 
     <string name="vandaag">vandaag</string>
     <string name="monday">maandag</string>
@@ -27,5 +28,11 @@
 
     <string name="loading">aan het laden</string>
     <string name="niksVandaag">Niks vandaag</string>
+
+    <string name="add">+</string>
+    <string name="back">\></string>
+
+    <string name="agendapuntPlaceholder">Agendapunt</string>
+    <string name="save">Opslaan</string>
 
 </resources>

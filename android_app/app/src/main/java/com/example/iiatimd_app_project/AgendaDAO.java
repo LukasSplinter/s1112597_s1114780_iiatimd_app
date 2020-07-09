@@ -5,10 +5,18 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import org.json.JSONArray;
+
 import java.util.List;
 
 @Dao
 public interface AgendaDAO {
+
+    @Query("DELETE FROM AgendaPunt")
+    void deleteAll();
+
+    @Insert
+    void insertAllAgendapunten(List<AgendaPunt> agendaPunten);
 
     @Query("SELECT * FROM AgendaPunt")
     List<AgendaPunt> getAll();
