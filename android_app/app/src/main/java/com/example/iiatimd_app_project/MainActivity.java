@@ -17,11 +17,14 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -120,25 +123,23 @@ public class MainActivity extends AppCompatActivity{
         cal.setTime(d);
         int currentDay = cal.get(Calendar.DAY_OF_MONTH);
         int currentMonth = cal.get(Calendar.MONTH);
-        int currentYear = cal.get(Calendar.YEAR);
+        final int currentYear = cal.get(Calendar.YEAR);
 
         RequestQueue queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-        /*
-        * SWITCH URL LATER, DIT IS PUUR VOOR TIJDENS DEVELOPMENT WANT IK KAN NIET STUDIO EN MN API SAMEN RUNNEN :)))
-        * */
-//        final String url = "http://127.0.0.1:8000/api + "/activiteiten/random"";
-        final String url = "https://pokeapi.co/api/v2/pokemon/";
+        final String url = "https://dey-iiatimd.herokuapp.com/api/";
 
+        Log.d("api", (url + "activiteiten/random"));
         JsonObjectRequest activiteitRequest = new JsonObjectRequest
-                (Request.Method.GET, (url + "ditto"), null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, (url + "activiteiten/random"), null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            activiteit.setText(response.getString("name"));
+                            Log.d("api-act", response.toString());
+                            activiteit.setText(response.getString("activiteit_omschrijving"));
                             //todo: zet planning in room db - DONE
-                            db.activiteitDAO().deleteFirst();
-                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("omschrijving"), 1));
+//                            db.activiteitDAO().deleteFirst();
+//                            db.activiteitDAO().insertActiviteit(new Activiteit(response.getString("activiteit_omschrijving"), 1));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -147,40 +148,77 @@ public class MainActivity extends AppCompatActivity{
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("api", error.toString());
+                        Log.e("api-act-error", error.toString());
                         //todo: als api call foutgaat, haal laatste planning uit room db - DONE
-                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
+//                        activiteit.setText(db.activiteitDAO().getFirst().getOmschrijving());
                     }
                 });
         //request voor planning/agendapunten
         //url + dag/maand/jaar
-        //todo: als ik api kan aanspreken: verander api naar onderstaand
-        //(url + /agenda/ + currentDay + "/" + currentMonth + "/" + currentYear)
-        JsonObjectRequest planningRequest = new JsonObjectRequest
-                (Request.Method.GET, (url + "pikachu"), null, new Response.Listener<JSONObject>() {
+        JsonArrayRequest planningRequest = new JsonArrayRequest
+                (Request.Method.GET, (url + "agenda/" + currentDay + "/" + (currentMonth + 1) + "/" + currentYear), null, new Response.Listener<JSONArray>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         try {
-                            planning.setText(response.getString("name"));
-
+                            Log.d("api-agenda", response.toString());
+                            //if size of reponse array == 0 > no activities for today
+                            if (response.length() == 0){
+                                planning.setText("Niks vandaag");
+                            }else{
+                                planning.setText(response.getJSONObject(0).getString("agenda_item"));
+                            }
                             //todo: zet planning in room db - KAN PAS VERDER ALS API AANSPREEKBAAR IS
 //                            db.agendaDAO().deleteFirst();
 //                            db.agendaDAO().insertAgendaPunt(new AgendaPunt([[agenda-omschrijving]], [[agenda-datum]], 1));
-                        } catch (JSONException e) {
-                            //if no json gets returned, there are no pointers for that day, so we can replace the string with "niks vandaag"
-                            planning.setText("Niks vandaag");
+                        } catch (Exception e) {
+                            Log.e("api-agenda-error", e.toString());
                         }
                     }
+
+
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("api", error.toString());
+                        Log.e("api-agenda-error", error.toString());
                         //todo: als api call foutgaat, haal laatste planning uit room db - DONE (DENKIK, TESTEN!)
-                        planning.setText(db.agendaDAO().getFirst().getOmschrijving());
+//                        planning.setText(db.agendaDAO().getFirst().getOmschrijving());
                     }
                 });
+        activiteitRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+
+        planningRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
 
         VolleySingleton.getInstance(this).addToRequestQueue(activiteitRequest);
         VolleySingleton.getInstance(this).addToRequestQueue(planningRequest);

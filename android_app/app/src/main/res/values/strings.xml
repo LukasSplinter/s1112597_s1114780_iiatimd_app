@@ -25,4 +25,6 @@
     <string name="activiteit">Activiteit</string>
     <string name="naarAgendaTekst">Meer in planning</string>
 
+    <string name="loading">aan het laden</string>
+
 </resources>
