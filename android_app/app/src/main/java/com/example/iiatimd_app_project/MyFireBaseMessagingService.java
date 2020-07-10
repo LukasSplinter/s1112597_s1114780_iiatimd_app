@@ -36,7 +36,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
 
         String channelId = "1";
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,channelId)
-            .setContentTitle("leerdoel van vandaag")
+            .setContentTitle("Begin of your Dey")
                 .setContentText(messageBody)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setAutoCancel(true)
