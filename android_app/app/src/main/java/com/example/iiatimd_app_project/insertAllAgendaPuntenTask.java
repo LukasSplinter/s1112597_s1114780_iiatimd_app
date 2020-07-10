@@ -1,6 +1,9 @@
 package com.example.iiatimd_app_project;
 
+import android.util.Log;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.List;
 
@@ -21,6 +24,17 @@ public class insertAllAgendaPuntenTask implements Runnable {
         if (deleteFirst){
             db.agendaDAO().deleteAll();
         }
-        db.agendaDAO().insertAllAgendapunten((List<AgendaPunt>) agendaPunten);
+        for (int i = 0; i < agendaPunten.length(); i++){
+            try {
+                AgendaPunt agendaPunt = new AgendaPunt(agendaPunten.getJSONObject(i).getString("agenda_item"),
+                        agendaPunten.getJSONObject(i).getString("datum"),
+                        Integer.valueOf(agendaPunten.getJSONObject(i).getString("agenda_id")));
+
+                db.agendaDAO().insertAgendaPunt(agendaPunt);
+
+            } catch (JSONException e) {
+                Log.e("agendaTaskError", e.getMessage());
+            }
+        }
     }
 }

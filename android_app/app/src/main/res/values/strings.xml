@@ -34,5 +34,6 @@
 
     <string name="agendapuntPlaceholder">Agendapunt</string>
     <string name="save">Opslaan</string>
+    <string name="dots">...</string>
 
 </resources>

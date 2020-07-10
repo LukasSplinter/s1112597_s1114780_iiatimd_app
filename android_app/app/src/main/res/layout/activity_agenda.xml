@@ -92,4 +92,25 @@
         app:layout_constraintStart_toEndOf="@+id/textView__greeting"
         app:layout_constraintTop_toTopOf="@+id/textView__greeting" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/agenda_points_container"
+        android:layout_width="362dp"
+        android:layout_height="450dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="@+id/background_image"
+        app:layout_constraintTop_toTopOf="@+id/background_image"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <ImageView
+        android:id="@+id/loading"
+        android:layout_width="72dp"
+        android:layout_height="74dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="@+id/background_image"
+        app:layout_constraintStart_toStartOf="@+id/background_image"
+        app:layout_constraintTop_toTopOf="@+id/background_image"
+        app:srcCompat="@drawable/ic_loader" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

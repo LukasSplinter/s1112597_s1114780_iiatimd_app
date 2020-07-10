@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.page_intro, R.anim.page_outro);
         setContentView(R.layout.activity_main);
 
         final ImageButton agendaButton = findViewById(R.id.agendaButton);

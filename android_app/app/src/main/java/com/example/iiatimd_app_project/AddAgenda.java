@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,13 +25,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddAgenda extends AppCompatActivity {
+    //bool to prevent double clicking > double sending post request
+    boolean hasSent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.page_intro, R.anim.page_outro);
         setContentView(R.layout.activity_add_agenda);
 
+        //bool to prevent double clicking > double sending post request
+        hasSent = false;
+
         Button backButton = findViewById(R.id.back_button);
-        Button saveButton = findViewById(R.id.save_button);
+        final Button saveButton = findViewById(R.id.save_button);
 
         final DatePicker inputDate = findViewById(R.id.input_date);
         final EditText inputText = findViewById(R.id.input_text);
@@ -49,6 +57,11 @@ public class AddAgenda extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                //prevent double click > double post request
+                if (hasSent){return;}
+                hasSent = true;
+                //set innertext to "..." to notify user that request has been sent
+                saveButton.setText("...");
                 //pull and parse data from input forms
                 final String itemDescription = inputText.getText().toString();
                 final String itemDate = inputDate.getYear() + "-" + (inputDate.getMonth() + 1) + "-" + inputDate.getDayOfMonth();
@@ -84,6 +97,10 @@ public class AddAgenda extends AppCompatActivity {
                         return params;
                     }
                 };
+                postRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        0,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 queue.add(postRequest);
 
 
