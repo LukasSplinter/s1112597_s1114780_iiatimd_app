@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".AgendaActivity" />
+        <activity android:name=".addSettingRowActivity" />
         <service android:name=".MyFireBaseMessagingService"
                 android:exported="false">
             <intent-filter>
