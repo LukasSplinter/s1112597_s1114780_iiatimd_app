@@ -10,6 +10,8 @@
     <string name="groet_middag">Goedemiddag</string>
     <string name="groet_avond">Goedenavond</string>
 
+    <string name="activiteit_toevoegen">Activiteit toevoegen</string>
+
     <string name="planning">Planning</string>
     <string name="instellingen">Instellingen</string>
     <string name="addAgenda">Voeg toe</string>

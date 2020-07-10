@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity{
             //get day of the week
         String dayOfTheWeek = sdf.format(d).toLowerCase();
             //set textview to said date of the week
+
             //dutch days because java simpledateformat doesnt have dutch
         //done by getting the string resource name with varuable dayOfTheWeek
         today.setText(getString(getResources().getIdentifier(dayOfTheWeek, "string", getPackageName())));
@@ -209,5 +210,12 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle != null){
+            TextView tv = findViewById(R.id.textview__test);
+            tv.setText(bundle.get("leerdoel").toString());
+        }
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/background_image"
@@ -40,8 +41,8 @@
         android:layout_marginBottom="5dp"
         android:background="#00000000"
         android:contentDescription="@string/footer_agenda"
-        android:tint="#A9A9A9"
         android:transitionName="NavAgendaButton"
+        android:tint="#A9A9A9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.13"
@@ -65,10 +66,10 @@
 
     <TextView
         android:id="@+id/textView__greeting"
-        android:layout_width="232dp"
-        android:layout_height="69dp"
+        android:layout_width="342dp"
+        android:layout_height="83dp"
         android:fontFamily="@font/tenali_ramakrishna"
-        android:text="@string/instellingen"
+        android:text="@string/activiteit_toevoegen"
         android:textColor="#000000"
         android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="@+id/homeButton"
@@ -78,27 +79,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.036" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="408dp"
-        android:layout_height="376dp"
+    <Button
+        android:id="@+id/saveActivityBtn"
+        android:layout_width="217dp"
+        android:layout_height="80dp"
+        android:fontFamily="@font/tenali_ramakrishna"
+        android:text="Opslaan"
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/background_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.481" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="363dp"
+        android:layout_height="121dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView__greeting"
-        app:layout_constraintVertical_bias="0.32" />
+        app:layout_constraintVertical_bias="0.424" />
 
-    <Button
-        android:id="@+id/toAddBtn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/circle"
-        android:text="+"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView__greeting"
-        app:layout_constraintTop_toTopOf="parent" />
+    <EditText
+        android:id="@+id/activityInput"
+        android:layout_width="275dp"
+        android:layout_height="56dp"
+        android:ems="10"
+        android:fontFamily="@font/tenali_ramakrishna"
+        android:hint="Uw Activiteit"
+        android:inputType="textPersonName"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
