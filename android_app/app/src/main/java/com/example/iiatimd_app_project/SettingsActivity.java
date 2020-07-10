@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.page_intro, R.anim.page_outro);
         setContentView(R.layout.activity_settings);
 
         final ImageButton agendaButton = findViewById(R.id.agendaButton);
@@ -64,6 +68,11 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        //loading symbol and animation for during api loading
+        final ImageView loading = findViewById(R.id.loading);
+        Animation rotating = AnimationUtils.loadAnimation(this, R.anim.rotation);
+        loading.startAnimation(rotating);
+
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -77,6 +86,10 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                             Log.d("Getlukt", response.toString());
+                        //set loading invis
+                        loading.setAlpha(0f);
+                        loading.setVisibility(View.GONE);
+
                             for (int i = 0; i<response.length(); i++){
                                 try {
                                 settingRowEntries.add(new SettingRowEntry((String) response.getJSONObject(i).get("activiteit_omschrijving"), (int) response.getJSONObject(i).get("activiteit_id")));

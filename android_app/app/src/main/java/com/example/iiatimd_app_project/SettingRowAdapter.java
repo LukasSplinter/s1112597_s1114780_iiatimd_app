@@ -57,7 +57,7 @@ public class SettingRowAdapter extends RecyclerView.Adapter<SettingRowAdapter.Se
     @NonNull
     @Override
     public SettingRowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.settings_row, parent, false);
+        View v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.setting_row, parent, false);
         return new SettingRowViewHolder(v, mListener);
     }
 

@@ -101,4 +101,14 @@
         app:layout_constraintStart_toEndOf="@+id/textView__greeting"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/loading"
+        android:layout_width="72dp"
+        android:layout_height="74dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image"
+        app:layout_constraintEnd_toEndOf="@+id/background_image"
+        app:layout_constraintStart_toStartOf="@+id/background_image"
+        app:layout_constraintTop_toTopOf="@+id/background_image"
+        app:srcCompat="@drawable/ic_loader" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

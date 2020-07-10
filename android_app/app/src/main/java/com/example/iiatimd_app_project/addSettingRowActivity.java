@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class addSettingRowActivity extends AppCompatActivity {
+    //bool to prevent double clicking > double sending post request
+    boolean hasSent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.page_intro, R.anim.page_outro);
         setContentView(R.layout.setting_row_add);
 
         final ImageButton agendaButton = findViewById(R.id.agendaButton);
@@ -59,11 +62,15 @@ public class addSettingRowActivity extends AppCompatActivity {
         });
 
         final RequestQueue queue = VolleySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-        final String url = "https://dey-iiatimd.herokuapp.com/api/activiteit/create";
+        final String url = "https://dey-iiatimd.herokuapp.com/api/activiteiten/create";
 
         saveActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                //prevent double click > double post request
+                if (hasSent){return;}
+                hasSent = true;
+
                 final String activity_Desc = inputText.getText().toString();
 
                 StringRequest postRequest = new StringRequest(Request.Method.POST, url,
